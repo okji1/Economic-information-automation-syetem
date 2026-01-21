@@ -1,0 +1,38 @@
+name: Daily Economy News Summary
+
+on:
+  schedule:
+    # 매일 한국 시간 오전 10시 실행
+    # (GitHub 서버는 UTC 기준이므로 10시 - 9시간 = 01시 설정)
+    - cron: '0 1 * * *'
+  workflow_dispatch: # 수동 실행 버튼 추가
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v3
+
+      - name: 파이썬 설정 (3.10)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: FFmpeg 설치 (Whisper 필수)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: 라이브러리 설치
+        run: |
+          pip install -r requirements.txt
+
+      - name: 스크립트 실행
+        env:
+          # 깃허브 Settings -> Secrets에 등록된 키를 불러옴
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python main.py
