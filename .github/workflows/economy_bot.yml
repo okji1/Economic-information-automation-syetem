@@ -4,7 +4,7 @@ on:
   schedule:
     # 매일 한국 시간 오전 10시 실행
     # (GitHub 서버는 UTC 기준이므로 10시 - 9시간 = 01시 설정)
-    - cron: '0 1 * * *'
+    - cron: '13 1 * * *'
   workflow_dispatch: # 수동 실행 버튼 추가
 
 jobs:
